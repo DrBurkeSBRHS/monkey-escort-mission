@@ -28,6 +28,27 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, player_2, controller.dx(10000), controller.dy(10000))
+        lastshotx = controller.dx(10000)
+        lastshoty = controller.dy(10000)
+    } else {
+        projectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . 4 4 . . . . . . . 
+            . . . . . . 4 5 5 4 . . . . . . 
+            . . . . . . 2 5 5 2 . . . . . . 
+            . . . . . . . 2 2 . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, player_2, lastshotx, lastshoty)
     }
 })
 function monkeyMove2 () {
@@ -36,12 +57,20 @@ function monkeyMove2 () {
 scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     setBaddieVel(sprite)
 })
+sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
+    sprite.startEffect(effects.fire)
+})
 function monkeyMove () {
     dx = player_2.tilemapLocation().x - player_1.tilemapLocation().x
     dy = player_2.tilemapLocation().y - player_1.tilemapLocation().y
     player_1.setVelocity((dx + randint(10, dx / 3)) * (randint(1, 4) / 4), (dy + randint(10, dy / 3)) * (randint(1, 4) / 4))
 }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+})
 let a_baddie: Sprite = null
+let lastshoty = 0
+let lastshotx = 0
 let projectile: Sprite = null
 let bdy = 0
 let bdx = 0
