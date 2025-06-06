@@ -1,13 +1,26 @@
+namespace SpriteKind {
+    export const Escort = SpriteKind.create()
+}
 function setBaddieVel (mySprite: Sprite) {
     mySprite.setVelocity(randint(-30, 30), randint(-30, 30))
-    bdx = player_1.tilemapLocation().x - mySprite.tilemapLocation().x
-    bdy = player_1.tilemapLocation().y - mySprite.tilemapLocation().y
-    mySprite.setVelocity((bdx + randint(10, bdx / 3)) * (randint(1, 4) / 4), (bdy + randint(10, bdy / 3)) * (randint(1, 4) / 4))
+    bdx = monkey.tilemapLocation().x - mySprite.tilemapLocation().x
+    bdy = monkey.tilemapLocation().y - mySprite.tilemapLocation().y
+    mySprite.setVelocity((bdx + randint(10, bdx / 3)) * (randint(1, 4) / 6), (bdy + randint(10, bdy / 3)) * (randint(1, 4) / 6))
 }
 function midPoint (mySprite: Sprite, mySprite2: Sprite) {
     mid_x = (mySprite.x + mySprite2.x) / 2
     mid_y = (mySprite.y + mySprite2.y) / 2
 }
+controller.anyButton.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (controller.left.isPressed() || controller.right.isPressed()) {
+        lastshotx = controller.dx(10000)
+        lastshoty = controller.dy(10000)
+    }
+    if (controller.up.isPressed() || controller.down.isPressed()) {
+        lastshotx = controller.dx(10000)
+        lastshoty = controller.dy(10000)
+    }
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (controller.dx() + controller.dy() != 0) {
         projectile = sprites.createProjectileFromSprite(img`
@@ -28,8 +41,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, player_2, controller.dx(10000), controller.dy(10000))
-        lastshotx = controller.dx(10000)
-        lastshoty = controller.dy(10000)
     } else {
         projectile = sprites.createProjectileFromSprite(img`
             . . . . . . . . . . . . . . . . 
@@ -51,8 +62,15 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             `, player_2, lastshotx, lastshoty)
     }
 })
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Escort, function (sprite, otherSprite) {
+    monkeyToSpawn()
+})
 function monkeyMove2 () {
 	
+}
+function monkeyToSpawn () {
+    tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
+    tiles.placeOnRandomTile(player_2, sprites.castle.tileDarkGrass2)
 }
 scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     setBaddieVel(sprite)
@@ -61,48 +79,37 @@ sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     sprite.startEffect(effects.fire)
 })
 function monkeyMove () {
-    dx = player_2.tilemapLocation().x - player_1.tilemapLocation().x
-    dy = player_2.tilemapLocation().y - player_1.tilemapLocation().y
-    player_1.setVelocity((dx + randint(10, dx / 3)) * (randint(1, 4) / 4), (dy + randint(10, dy / 3)) * (randint(1, 4) / 4))
+    dx = player_2.tilemapLocation().x - monkey.tilemapLocation().x
+    dy = player_2.tilemapLocation().y - monkey.tilemapLocation().y
+    monkey.setVelocity((dx + randint(10, dx / 3)) * (randint(1, 4) / 4), (dy + randint(10, dy / 3)) * (randint(1, 4) / 4))
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    info.changeLifeBy(-1)
+})
 let a_baddie: Sprite = null
+let dy = 0
+let dx = 0
+let projectile: Sprite = null
 let lastshoty = 0
 let lastshotx = 0
-let projectile: Sprite = null
 let bdy = 0
 let bdx = 0
+let monkey: Sprite = null
 let player_2: Sprite = null
-let player_1: Sprite = null
 let mid_y = 0
 let mid_x = 0
+info.setLife(5)
+info.startCountdown(200)
 let y = 0
 let x = 0
-let dx = 0
-let dy = 0
+let maxbaddie = 12
 mid_x = 0
 mid_y = 0
 tiles.setCurrentTilemap(tilemap`level1`)
-player_1 = sprites.create(img`
-    . . . . f f f f f . . . . . . . 
-    . . . f e e e e e f . . . . . . 
-    . . f d d d d e e e f . . . . . 
-    . c d f d d f d e e f f . . . . 
-    . c d f d d f d e e d d f . . . 
-    c d e e d d d d e e b d c . . . 
-    c d d d d c d d e e b d c . f f 
-    c c c c c d d d e e f c . f e f 
-    . f d d d d d e e f f . . f e f 
-    . . f f f f f e e e e f . f e f 
-    . . . . f e e e e e e e f f e f 
-    . . . f e f f e f e e e e f f . 
-    . . . f e f f e f e e e e f . . 
-    . . . f d b f d b f f e f . . . 
-    . . . f d d c d d b b d f . . . 
-    . . . . f f f f f f f f f . . . 
-    `, SpriteKind.Player)
 player_2 = sprites.create(img`
     . . . . . . f f f f . . . . . . 
     . . . . f f f 2 2 f f f . . . . 
@@ -121,45 +128,67 @@ player_2 = sprites.create(img`
     . . . . . f f f f f f . . . . . 
     . . . . . f f . . f f . . . . . 
     `, SpriteKind.Player)
-player_1.setPosition(330, 20)
-player_2.setPosition(360, 10)
+tiles.placeOnRandomTile(player_2, sprites.castle.tileDarkGrass2)
+monkey = sprites.create(img`
+    . . . . f f f f f . . . . . . . 
+    . . . f e e e e e f . . . . . . 
+    . . f d d d d e e e f . . . . . 
+    . c d f d d f d e e f f . . . . 
+    . c d f d d f d e e d d f . . . 
+    c d e e d d d d e e b d c . . . 
+    c d d d d c d d e e b d c . f f 
+    c c c c c d d d e e f c . f e f 
+    . f d d d d d e e f f . . f e f 
+    . . f f f f f e e e e f . f e f 
+    . . . . f e e e e e e e f f e f 
+    . . . f e f f e f e e e e f f . 
+    . . . f e f f e f e e e e f . . 
+    . . . f d b f d b f f e f . . . 
+    . . . f d d c d d b b d f . . . 
+    . . . . f f f f f f f f f . . . 
+    `, SpriteKind.Escort)
+tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
 controller.moveSprite(player_2)
+monkeyToSpawn()
 pause(100)
 game.onUpdateInterval(50, function () {
-    midPoint(player_1, player_2)
+    midPoint(monkey, player_2)
     scene.centerCameraAt(mid_x, mid_y)
 })
 game.onUpdateInterval(2000, function () {
-    for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
-        if (Math.sqrt(Math.abs(value.x - player_2.x) ** 2 + Math.abs(value.y - player_2.y) ** 2) < 65) {
-            a_baddie = sprites.create(img`
-                ........................
-                ........................
-                ........................
-                ........................
-                ..........ffff..........
-                ........ff1111ff........
-                .......fb111111bf.......
-                .......f11111111f.......
-                ......fd11111111df......
-                ......fd11111111df......
-                ......fddd1111dddf......
-                ......fbdbfddfbdbf......
-                ......fcdcf11fcdcf......
-                .......fb111111bf.......
-                ......fffcdb1bdffff.....
-                ....fc111cbfbfc111cf....
-                ....f1b1b1ffff1b1b1f....
-                ....fbfbffffffbfbfbf....
-                .........ffffff.........
-                ...........fff..........
-                ........................
-                ........................
-                ........................
-                ........................
-                `, SpriteKind.Enemy)
-            tiles.placeOnTile(a_baddie, tiles.getTileLocation(value.column, value.row))
-            setBaddieVel(a_baddie)
+    if (sprites.allOfKind(SpriteKind.Enemy).length < maxbaddie) {
+        for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
+            if (Math.sqrt(Math.abs(value.x - player_2.x) ** 2 + Math.abs(value.y - player_2.y) ** 2) < 65) {
+                a_baddie = sprites.create(img`
+                    ........................
+                    ........................
+                    ........................
+                    ........................
+                    ..........ffff..........
+                    ........ff1111ff........
+                    .......fb111111bf.......
+                    .......f11111111f.......
+                    ......fd11111111df......
+                    ......fd11111111df......
+                    ......fddd1111dddf......
+                    ......fbdbfddfbdbf......
+                    ......fcdcf11fcdcf......
+                    .......fb111111bf.......
+                    ......fffcdb1bdffff.....
+                    ....fc111cbfbfc111cf....
+                    ....f1b1b1ffff1b1b1f....
+                    ....fbfbffffffbfbfbf....
+                    .........ffffff.........
+                    ...........fff..........
+                    ........................
+                    ........................
+                    ........................
+                    ........................
+                    `, SpriteKind.Enemy)
+                tiles.placeOnTile(a_baddie, tiles.getTileLocation(value.column, value.row))
+                a_baddie.setFlag(SpriteFlag.BounceOnWall, true)
+                setBaddieVel(a_baddie)
+            }
         }
     }
 })
