@@ -62,6 +62,9 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             `, player_2, lastshotx, lastshoty)
     }
 })
+scene.onOverlapTile(SpriteKind.Escort, assets.tile`myTile`, function (sprite, location) {
+    game.gameOver(true)
+})
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Escort, function (sprite, otherSprite) {
     monkeyToSpawn()
 })
