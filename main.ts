@@ -103,7 +103,7 @@ let player_2: Sprite = null
 let mid_y = 0
 let mid_x = 0
 info.setLife(5)
-info.startCountdown(200)
+info.setScore(20000)
 let y = 0
 let x = 0
 let maxbaddie = 12
@@ -154,6 +154,7 @@ pause(100)
 game.onUpdateInterval(50, function () {
     midPoint(monkey, player_2)
     scene.centerCameraAt(mid_x, mid_y)
+    info.setScore(20000 - game.runtime() / 50)
 })
 game.onUpdateInterval(2000, function () {
     if (sprites.allOfKind(SpriteKind.Enemy).length < maxbaddie) {
