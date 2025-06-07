@@ -22,6 +22,7 @@ controller.anyButton.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    music.play(music.createSoundEffect(WaveShape.Noise, 5000, 0, 165, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
     if (controller.dx() + controller.dy() != 0) {
         projectile = sprites.createProjectileFromSprite(img`
             . . . . . . . . . . . . . . . . 
@@ -66,11 +67,9 @@ scene.onOverlapTile(SpriteKind.Escort, assets.tile`myTile`, function (sprite, lo
     game.gameOver(true)
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Escort, function (sprite, otherSprite) {
+    music.play(music.melodyPlayable(music.beamUp), music.PlaybackMode.InBackground)
     monkeyToSpawn()
 })
-function monkeyMove2 () {
-	
-}
 function monkeyToSpawn () {
     tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
     tiles.placeOnRandomTile(player_2, sprites.castle.tileDarkGrass2)
@@ -79,6 +78,7 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
     setBaddieVel(sprite)
 })
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
+    music.play(music.melodyPlayable(music.thump), music.PlaybackMode.InBackground)
     sprite.startEffect(effects.fire)
 })
 function monkeyMove () {
@@ -91,6 +91,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
+    music.play(music.createSoundEffect(WaveShape.Sine, 160, 0, 191, 0, 500, SoundExpressionEffect.None, InterpolationCurve.Logarithmic), music.PlaybackMode.UntilDone)
     info.changeLifeBy(-1)
     start_score += -2000
 })
@@ -154,6 +155,8 @@ tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
 controller.moveSprite(player_2)
 monkeyToSpawn()
 scene.centerCameraAt(320, 0)
+music.setVolume(35)
+music.play(music.createSong(assets.song`Tales`), music.PlaybackMode.LoopingInBackground)
 game.setDialogCursor(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . b 5 b . . . 
@@ -223,6 +226,8 @@ game.setDialogCursor(img`
 game.showLongText("You can shoot the ghosts to clear them out. If you run into a ghost, you lose a life. The faster you complete the maze with the fewest lives lost, the greater will be your score.", DialogLayout.Full)
 game.showLongText("Ghosts spawn when you get near their blue spawn tile, so keep your distance", DialogLayout.Bottom)
 game.showLongText("Are you ready? Go!", DialogLayout.Center)
+music.stopAllSounds()
+music.setVolume(60)
 let start_score = 30000 + game.runtime() / 50
 game.onUpdateInterval(50, function () {
     midPoint(monkey, player_2)
@@ -233,6 +238,7 @@ game.onUpdateInterval(2000, function () {
     if (sprites.allOfKind(SpriteKind.Enemy).length < maxbaddie) {
         for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
             if (Math.sqrt(Math.abs(value.x - player_2.x) ** 2 + Math.abs(value.y - player_2.y) ** 2) < 65) {
+                music.play(music.createSoundEffect(WaveShape.Sine, 774, 1, 150, 0, 100, SoundExpressionEffect.Warble, InterpolationCurve.Linear), music.PlaybackMode.UntilDone)
                 a_baddie = sprites.create(img`
                     ........................
                     ........................
