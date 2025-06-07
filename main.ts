@@ -92,6 +92,7 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
     info.changeLifeBy(-1)
+    start_score += -2000
 })
 let a_baddie: Sprite = null
 let dy = 0
@@ -105,10 +106,9 @@ let monkey: Sprite = null
 let player_2: Sprite = null
 let mid_y = 0
 let mid_x = 0
-info.setLife(5)
-info.setScore(20000)
-let y = 0
 let x = 0
+let y = 0
+info.setLife(5)
 let maxbaddie = 12
 mid_x = 0
 mid_y = 0
@@ -153,11 +153,81 @@ monkey = sprites.create(img`
 tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
 controller.moveSprite(player_2)
 monkeyToSpawn()
-pause(100)
+scene.centerCameraAt(320, 0)
+game.setDialogCursor(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . b 5 b . . . 
+    . . . . . . . . . b 5 b . . . . 
+    . . . . . . b b b b b b . . . . 
+    . . . . . b b 5 5 5 5 5 b . . . 
+    . b b b b b 5 5 5 5 5 5 5 b . . 
+    . b d 5 b 5 5 5 5 5 5 5 5 b . . 
+    . . b 5 5 b 5 d 1 f 5 d 4 f . . 
+    . . b d 5 5 b 1 f f 5 4 4 c . . 
+    b b d b 5 5 5 d f b 4 4 4 4 4 b 
+    b d d c d 5 5 b 5 4 4 4 4 4 b . 
+    c d d d c c b 5 5 5 5 5 5 5 b . 
+    c b d d d d d 5 5 5 5 5 5 5 b . 
+    . c d d d d d d 5 5 5 5 5 d b . 
+    . . c b d d d d d 5 5 5 b b . . 
+    . . . c c c c c c c c b b . . . 
+    `)
+game.showLongText("Welcome to Monkey Escort Mission, I am the Duck of Wisdom", DialogLayout.Bottom)
+game.showLongText("Here you are at the starting point of this mission.", DialogLayout.Bottom)
+game.showLongText("Your goal is to navigate the maze and get the monkey to the golden area safely.", DialogLayout.Top)
+game.setDialogCursor(img`
+    ........................
+    ........................
+    ........................
+    ........................
+    ..........ffff..........
+    ........ff1111ff........
+    .......fb111111bf.......
+    .......f11111111f.......
+    ......fd11111111df......
+    ......fd11111111df......
+    ......fddd1111dddf......
+    ......fbdbfddfbdbf......
+    ......fcdcf11fcdcf......
+    .......fb111111bf.......
+    ......fffcdb1bdffff.....
+    ....fc111cbfbfc111cf....
+    ....f1b1b1ffff1b1b1f....
+    ....fbfbffffffbfbfbf....
+    .........ffffff.........
+    ...........fff..........
+    ........................
+    ........................
+    ........................
+    ........................
+    `)
+game.showLongText("The monkey will follow you. Mostly! You must avoid the ghosts who look like this. If a ghost touches the monkey, you both warp back to the starting point. ", DialogLayout.Full)
+game.setDialogCursor(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . b 5 b . . . 
+    . . . . . . . . . b 5 b . . . . 
+    . . . . . . b b b b b b . . . . 
+    . . . . . b b 5 5 5 5 5 b . . . 
+    . b b b b b 5 5 5 5 5 5 5 b . . 
+    . b d 5 b 5 5 5 5 5 5 5 5 b . . 
+    . . b 5 5 b 5 d 1 f 5 d 4 f . . 
+    . . b d 5 5 b 1 f f 5 4 4 c . . 
+    b b d b 5 5 5 d f b 4 4 4 4 4 b 
+    b d d c d 5 5 b 5 4 4 4 4 4 b . 
+    c d d d c c b 5 5 5 5 5 5 5 b . 
+    c b d d d d d 5 5 5 5 5 5 5 b . 
+    . c d d d d d d 5 5 5 5 5 d b . 
+    . . c b d d d d d 5 5 5 b b . . 
+    . . . c c c c c c c c b b . . . 
+    `)
+game.showLongText("You can shoot the ghosts to clear them out. If you run into a ghost, you lose a life. The faster you complete the maze with the fewest lives lost, the greater will be your score.", DialogLayout.Full)
+game.showLongText("Ghosts spawn when you get near their blue spawn tile, so keep your distance", DialogLayout.Bottom)
+game.showLongText("Are you ready? Go!", DialogLayout.Center)
+let start_score = 30000 + game.runtime() / 50
 game.onUpdateInterval(50, function () {
     midPoint(monkey, player_2)
     scene.centerCameraAt(mid_x, mid_y)
-    info.setScore(20000 - game.runtime() / 50)
+    info.setScore(start_score - game.runtime() / 50)
 })
 game.onUpdateInterval(2000, function () {
     if (sprites.allOfKind(SpriteKind.Enemy).length < maxbaddie) {
