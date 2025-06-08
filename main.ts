@@ -22,54 +22,71 @@ controller.anyButton.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    music.play(music.createSoundEffect(WaveShape.Noise, 5000, 0, 165, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
-    if (controller.dx() + controller.dy() != 0) {
-        projectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . 4 4 . . . . . . . 
-            . . . . . . 4 5 5 4 . . . . . . 
-            . . . . . . 2 5 5 2 . . . . . . 
-            . . . . . . . 2 2 . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, player_2, controller.dx(10000), controller.dy(10000))
+    if (sprites.allOfKind(SpriteKind.Projectile).length < 4) {
+        music.play(music.createSoundEffect(WaveShape.Noise, 5000, 0, 255, 167, 100, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
+        scene.cameraShake(1, 100)
+        if (controller.dx() + controller.dy() != 0) {
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . 4 4 . . . . . . . 
+                . . . . . . 4 5 5 4 . . . . . . 
+                . . . . . . 2 5 5 2 . . . . . . 
+                . . . . . . . 2 2 . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, player_2, controller.dx(10000), controller.dy(10000))
+        } else {
+            projectile = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . 4 4 . . . . . . . 
+                . . . . . . 4 5 5 4 . . . . . . 
+                . . . . . . 2 5 5 2 . . . . . . 
+                . . . . . . . 2 2 . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, player_2, lastshotx, lastshoty)
+        }
+        projectile.setBounceOnWall(true)
+        projectile.setFlag(SpriteFlag.DestroyOnWall, false)
+        projectile.setFlag(SpriteFlag.AutoDestroy, false)
+        projectile.lifespan = 3000
     } else {
-        projectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . 4 4 . . . . . . . 
-            . . . . . . 4 5 5 4 . . . . . . 
-            . . . . . . 2 5 5 2 . . . . . . 
-            . . . . . . . 2 2 . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, player_2, lastshotx, lastshoty)
+        music.play(music.createSoundEffect(WaveShape.Square, 3302, 3974, 255, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Logarithmic), music.PlaybackMode.InBackground)
     }
 })
 scene.onOverlapTile(SpriteKind.Escort, assets.tile`myTile`, function (sprite, location) {
+    music.stopAllSounds()
+    music.play(music.createSong(assets.song`Victory`), music.PlaybackMode.InBackground)
     game.gameOver(true)
+    pause(5000)
 })
+// sprite.setImage(sprites.)
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Escort, function (sprite, otherSprite) {
+    sprite.setImage(assets.image`red_ghost`)
+    extraEffects.createSpreadEffectOnAnchor(player_2, extraEffects.createSingleColorSpreadEffectData(5, ExtraEffectPresetShape.Twinkle), 2000)
+    extraEffects.createSpreadEffectOnAnchor(otherSprite, extraEffects.createSingleColorSpreadEffectData(5, ExtraEffectPresetShape.Twinkle), 2000)
     player_2.setStayInScreen(false)
     monkey.setStayInScreen(false)
     music.play(music.melodyPlayable(music.beamUp), music.PlaybackMode.InBackground)
+    pause(200)
     monkeyToSpawn()
     pause(1000)
     player_2.setStayInScreen(true)
@@ -84,7 +101,6 @@ scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
 })
 sprites.onDestroyed(SpriteKind.Enemy, function (sprite) {
     music.play(music.melodyPlayable(music.thump), music.PlaybackMode.InBackground)
-    sprite.startEffect(effects.fire)
 })
 function monkeyMove () {
     dx = player_2.tilemapLocation().x - monkey.tilemapLocation().x
@@ -92,13 +108,16 @@ function monkeyMove () {
     monkey.setVelocity((dx + randint(10, dx / 3)) * (randint(1, 4) / 4), (dy + randint(10, dy / 3)) * (randint(1, 4) / 4))
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite)
+    sprites.destroy(otherSprite, effects.fire, 200)
+    music.play(music.createSoundEffect(WaveShape.Noise, 87, 1, 255, 0, 200, SoundExpressionEffect.Warble, InterpolationCurve.Logarithmic), music.PlaybackMode.InBackground)
+    sprites.destroy(sprite)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite)
-    music.play(music.createSoundEffect(WaveShape.Sine, 160, 0, 191, 0, 500, SoundExpressionEffect.None, InterpolationCurve.Logarithmic), music.PlaybackMode.UntilDone)
+    music.play(music.createSoundEffect(WaveShape.Noise, 759, 1, 255, 0, 500, SoundExpressionEffect.Tremolo, InterpolationCurve.Logarithmic), music.PlaybackMode.InBackground)
+    sprites.destroy(otherSprite, effects.warmRadial, 500)
     info.changeLifeBy(-1)
     start_score += -2000
+    scene.cameraShake(4, 500)
 })
 let a_baddie: Sprite = null
 let dy = 0
@@ -119,6 +138,9 @@ info.setLife(5)
 let maxbaddie = 12
 mid_x = 0
 mid_y = 0
+game.setGameOverPlayable(true, music.melodyPlayable(music.magicWand), false)
+game.setGameOverPlayable(false, music.melodyPlayable(music.wawawawaa), true)
+game.setGameOverEffect(true, effects.smiles)
 tiles.setCurrentTilemap(tilemap`level1`)
 player_2 = sprites.create(img`
     . . . . . . f f f f . . . . . . 
@@ -182,7 +204,7 @@ game.setDialogCursor(img`
     . . c b d d d d d 5 5 5 b b . . 
     . . . c c c c c c c c b b . . . 
     `)
-game.showLongText("Welcome to Monkey Escort Mission, I am the Duck of Wisdom", DialogLayout.Bottom)
+game.showLongText("Welcome to Monkey Escort Mission, I am the Duck of Wisdom. Press 'A'", DialogLayout.Bottom)
 game.showLongText("Here you are at the starting point of this mission.", DialogLayout.Bottom)
 game.showLongText("Your goal is to navigate the maze and get the monkey to the golden area safely.", DialogLayout.Top)
 game.setDialogCursor(img`
@@ -230,7 +252,8 @@ game.setDialogCursor(img`
     . . c b d d d d d 5 5 5 b b . . 
     . . . c c c c c c c c b b . . . 
     `)
-game.showLongText("You can shoot the ghosts to clear them out. If you run into a ghost, you lose a life. The faster you complete the maze with the fewest lives lost, the greater will be your score.", DialogLayout.Full)
+game.showLongText("If you get far away, the monkey will rush to catch up.", DialogLayout.Bottom)
+game.showLongText("Shoot ghosts to clear them out. Running into ghosts stops them, but costs health. The faster you complete the maze with the fewest lives lost, the greater will be your score.", DialogLayout.Full)
 game.showLongText("Ghosts spawn when you get near their blue spawn tile, so keep your distance", DialogLayout.Bottom)
 game.showLongText("Are you ready? Go!", DialogLayout.Center)
 music.stopAllSounds()
@@ -243,6 +266,10 @@ game.onUpdateInterval(50, function () {
     midPoint(monkey, player_2)
     scene.centerCameraAt(mid_x, mid_y)
     info.setScore(start_score - game.runtime() / 50)
+    if (info.score() <= 0) {
+        game.setGameOverMessage(false, "You ran out of time!")
+        game.gameOver(false)
+    }
 })
 game.onUpdateInterval(2000, function () {
     if (sprites.allOfKind(SpriteKind.Enemy).length < maxbaddie) {
@@ -282,6 +309,6 @@ game.onUpdateInterval(2000, function () {
         }
     }
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(600, function () {
     monkeyMove()
 })
