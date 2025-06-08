@@ -161,6 +161,7 @@ tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
 controller.moveSprite(player_2)
 monkeyToSpawn()
 scene.centerCameraAt(320, 0)
+music.stopAllSounds()
 music.setVolume(35)
 music.play(music.createSong(assets.song`Tales`), music.PlaybackMode.LoopingInBackground)
 game.setDialogCursor(img`
