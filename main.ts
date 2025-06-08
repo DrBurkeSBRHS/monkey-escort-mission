@@ -67,8 +67,13 @@ scene.onOverlapTile(SpriteKind.Escort, assets.tile`myTile`, function (sprite, lo
     game.gameOver(true)
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Escort, function (sprite, otherSprite) {
+    player_2.setStayInScreen(false)
+    monkey.setStayInScreen(false)
     music.play(music.melodyPlayable(music.beamUp), music.PlaybackMode.InBackground)
     monkeyToSpawn()
+    pause(1000)
+    player_2.setStayInScreen(true)
+    monkey.setStayInScreen(true)
 })
 function monkeyToSpawn () {
     tiles.placeOnRandomTile(monkey, sprites.castle.tileDarkGrass2)
@@ -107,6 +112,7 @@ let monkey: Sprite = null
 let player_2: Sprite = null
 let mid_y = 0
 let mid_x = 0
+let mySprite = null
 let x = 0
 let y = 0
 info.setLife(5)
@@ -229,6 +235,9 @@ game.showLongText("Are you ready? Go!", DialogLayout.Center)
 music.stopAllSounds()
 music.setVolume(60)
 let start_score = 30000 + game.runtime() / 50
+music.play(music.createSong(assets.song`Serious`), music.PlaybackMode.LoopingInBackground)
+player_2.setStayInScreen(true)
+monkey.setStayInScreen(true)
 game.onUpdateInterval(50, function () {
     midPoint(monkey, player_2)
     scene.centerCameraAt(mid_x, mid_y)
