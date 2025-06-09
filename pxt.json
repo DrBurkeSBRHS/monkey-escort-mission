@@ -4,7 +4,8 @@
     "description": "",
     "dependencies": {
         "device": "*",
-        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0"
+        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0",
+        "settings-blocks": "github:microsoft/pxt-settings-blocks#v1.0.0"
     },
     "files": [
         "main.blocks",
