@@ -131,9 +131,9 @@ let monkey: Sprite = null
 let player_2: Sprite = null
 let mid_y = 0
 let mid_x = 0
-let mySprite = null
-let x = 0
 let y = 0
+let x = 0
+let mySprite = null
 info.setLife(5)
 let maxbaddie = 12
 mid_x = 0
