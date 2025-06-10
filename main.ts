@@ -24,7 +24,6 @@ controller.anyButton.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (sprites.allOfKind(SpriteKind.Projectile).length < 4) {
         music.play(music.createSoundEffect(WaveShape.Noise, 5000, 0, 255, 167, 100, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
-        scene.cameraShake(1, 100)
         if (controller.dx() + controller.dy() != 0) {
             projectile = sprites.createProjectileFromSprite(img`
                 . . . . . . . . . . . . . . . . 
