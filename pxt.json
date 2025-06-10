@@ -1,9 +1,11 @@
 {
     "name": "Monkey Escort Mission",
-    "version": "0.0.2",
+    "version": "1.1.2",
     "description": "",
     "dependencies": {
-        "device": "*"
+        "device": "*",
+        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0",
+        "settings-blocks": "github:microsoft/pxt-settings-blocks#v1.0.0"
     },
     "files": [
         "main.blocks",
@@ -11,7 +13,9 @@
         "README.md",
         "assets.json",
         "tilemap.g.jres",
-        "tilemap.g.ts"
+        "tilemap.g.ts",
+        "images.g.jres",
+        "images.g.ts"
     ],
     "testFiles": [
         "test.ts"
